@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maple Lunch</title>
+<style>
+  :root{--bg:#0c0c0f;--card:#16161b;--card2:#1e1e25;--line:rgba(255,255,255,.08);--ink:#f5f5f7;--muted:#9b9ba8;--a:#ffb020;--a2:#ff6a00;--on:#1a1203}
+  body.picnic{--a:#8ae88a;--a2:#2fb55a;--on:#06210f}
+  :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:rgba(12,12,15,.8);backdrop-filter:blur(14px)}
+  *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding-bottom:110px}
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+  .hidden{display:none!important}
+  .grad{background:linear-gradient(135deg,var(--a),var(--a2))}
+
+  /* topo */
+  .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:12px;padding:14px 20px;background:rgba(12,12,15,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .icon{width:38px;height:38px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:1.1rem}
+  .brand{font-weight:700;letter-spacing:-.02em;font-size:1.1rem}
+  .brand span{background:linear-gradient(135deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  main{max-width:1000px;margin:0 auto;padding:0 20px}
+
+  /* home */
+  .hero{padding:44px 0 26px}
+  .hero h1{font-size:clamp(2rem,6vw,3.2rem);letter-spacing:-.04em;line-height:1.05}
+  .hero p{color:var(--muted);margin-top:10px;font-size:1.05rem}
+  .shops{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .shop{position:relative;height:340px;border-radius:28px;overflow:hidden;text-align:left;background:var(--card);border:1px solid var(--line);transition:transform .25s,box-shadow .25s}
+  .shop:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+  .shop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+  .shop:hover img{transform:scale(1.06)}
+  .shop::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 8%,rgba(0,0,0,.1) 65%)}
+  .shop .in{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:24px}
+  .shop h2{font-size:1.8rem;letter-spacing:-.03em}
+  .shop p{color:#d0d0d8;margin:4px 0 14px;font-size:.95rem}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:99px;font-weight:600;font-size:.9rem;color:var(--on)}
+  .sun .pill{background:linear-gradient(135deg,#ffb020,#ff6a00)}
+  .picnic-card .pill{background:linear-gradient(135deg,#8ae88a,#2fb55a);color:#06210f}
+
+  /* cardápio */
+  .banner{position:relative;height:200px;border-radius:26px;overflow:hidden;margin:22px 0 18px;background:linear-gradient(135deg,var(--a),var(--a2))}
+  .banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+  .banner::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8),transparent 70%)}
+  .banner .in{position:absolute;left:22px;bottom:18px;z-index:2}
+  .banner h2{font-size:2rem;letter-spacing:-.04em}
+  .banner p{color:#e0e0e6;font-size:.95rem}
+  .cats{position:sticky;top:calc(67px + env(safe-area-inset-top,0px));z-index:15;display:flex;gap:8px;overflow-x:auto;padding:10px 0;background:var(--bg);scrollbar-width:none}
+  .cats::-webkit-scrollbar{display:none}
+  .chip{flex:none;padding:9px 18px;border-radius:99px;background:var(--card);border:1px solid var(--line);color:var(--muted);font-weight:600;font-size:.9rem;transition:.2s}
+  .chip.on{color:var(--on);border-color:transparent;background:linear-gradient(135deg,var(--a),var(--a2))}
+  .items{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin-top:10px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+  .ph{width:100%;height:180px;background:var(--card2);display:grid;place-items:center;color:var(--muted);font-size:.85rem;overflow:hidden}
+  .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .item .body{padding:15px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .item h3{font-size:1.05rem;letter-spacing:-.01em}
+  .item p{color:var(--muted);font-size:.88rem;line-height:1.4;flex:1}
+  .row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;min-height:40px}
+  .price{font-weight:700;font-size:1.1rem;color:var(--a)}
+  .add{padding:9px 18px;border-radius:99px;font-weight:700;font-size:.88rem;color:var(--on);background:linear-gradient(135deg,var(--a),var(--a2))}
+  .step{display:flex;align-items:center;gap:4px;background:var(--card2);border-radius:99px;padding:3px;border:1px solid var(--line)}
+  .step button{width:32px;height:32px;border-radius:50%;font-size:1.1rem;font-weight:700;background:var(--card)}
+  .step button.plus{color:var(--on);background:linear-gradient(135deg,var(--a),var(--a2))}
+  .step b{min-width:26px;text-align:center}
+
+  /* barra do carrinho */
+  .bar{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(140px);z-index:30;width:min(560px,calc(100% - 28px));display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-radius:20px;font-weight:700;color:var(--on);box-shadow:0 12px 40px rgba(0,0,0,.55);transition:transform .35s cubic-bezier(.2,.9,.3,1.2);background:linear-gradient(135deg,var(--a),var(--a2))}
+  .bar.show{transform:translateX(-50%)}
+
+  /* sheet */
+  .back{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:.25s}
+  .back.show{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:50%;bottom:0;z-index:50;width:min(560px,100%);max-height:92vh;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:28px 28px 0 0;padding:22px 20px calc(26px + env(safe-area-inset-bottom,0px));transform:translate(-50%,105%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .sheet.show{transform:translate(-50%,0)}
+  .sheet h3{font-size:1.3rem;letter-spacing:-.03em;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .line{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .line small{display:block;color:var(--muted)}
+  .total{display:flex;justify-content:space-between;font-size:1.2rem;font-weight:700;padding:16px 0 6px}
+  .total span:last-child{color:var(--a)}
+  label{display:block;font-size:.8rem;color:var(--muted);margin:14px 0 6px;font-weight:600}
+  input,select,textarea{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font:inherit;outline:0}
+  input:focus,select:focus,textarea:focus{border-color:var(--a)}
+  input.err{border-color:#ff5c5c}
+  textarea{resize:none;height:70px}
+  .wa{width:100%;margin-top:20px;padding:16px;border-radius:16px;font-weight:700;font-size:1rem;color:#fff;background:#1fa855;display:flex;justify-content:center;align-items:center;text-decoration:none;gap:10px}
+  .wa.off{opacity:.4;pointer-events:none}
+  .ghost{width:100%;margin-top:10px;padding:13px;border-radius:14px;border:1px solid var(--line);color:var(--muted);font-weight:600}
+  .empty{color:var(--muted);text-align:center;padding:30px 0}
+  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:30px 20px}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <button class="icon hidden" id="home">←</button>
+  <div class="brand">🍁 Maple<span>Lunch</span></div>
+</div>
+
+<main>
+  <section id="vHome">
+    <div class="hero"><h1>Qual lanchonete<br>hoje?</h1><p>Escolha, monte seu pedido e envie pelo WhatsApp da lanchonete.</p></div>
+    <div class="shops" id="shops"></div>
+  </section>
+  <section id="vMenu" class="hidden">
+    <div class="banner" id="banner"></div>
+    <div class="cats" id="cats"></div>
+    <div class="items" id="items"></div>
+  </section>
+</main>
+<footer>Fotos, preços e itens são placeholders.</footer>
+
+<div class="bar" id="bar"><span id="barL"></span><span>Ver pedido →</span></div>
+<div class="back" id="back"></div>
+<div class="sheet" id="sheet">
+  <h3>Seu pedido <button class="icon" id="close">✕</button></h3>
+  <div id="cartList"></div>
+  <div class="total"><span>Total</span><span id="cartTotal"></span></div>
+  <label>Seu nome *</label><input id="fName" placeholder="Como te chamamos?">
+  <label>Como quer receber?</label>
+  <select id="fType"><option>Entrega na escola</option><option>Retirada no balcão</option></select>
+  <div id="addrBox"><label>Onde você está na escola? *</label><input id="fAddr" list="places" placeholder="Ex.: Pátio, Quadra, Sala 12 (3º B)..."><datalist id="places"><option value="Pátio"><option value="Quadra"><option value="Biblioteca"><option value="Laboratório"><option value="Auditório"><option value="Sala de aula: "></datalist></div>
+  <label>Pagamento</label>
+  <select id="fPay"><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select>
+  <label>Observações</label><textarea id="fObs" placeholder="Ex.: sem cebola, ponto da carne..."></textarea>
+  <a class="wa" id="send" target="_blank" rel="noopener">Enviar pedido no WhatsApp</a>
+  <button class="ghost" id="copy">Copiar mensagem</button>
+  <textarea id="msgBox" class="hidden" readonly style="margin-top:10px;height:150px"></textarea>
+  <button class="ghost" id="clear">Esvaziar carrinho</button>
+</div>
+
+<script>
+  /* ====== CONFIG: troque pelos WhatsApps reais (DDI+DDD+número, só dígitos) ====== */
+  const WHATS = { sun: "5563900000001", picnic: "5563900000002" };
+
+  const U = id => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=700&q=70`;
+  let seed = 0;
+  const L = kw => `https://loremflickr.com/640/440/${kw}?lock=${++seed}`;
+  const B = (n,d,p,id) => ({n,d,p,s:[U(id),F("burger"),L("burger,hamburger")]});
+  let fn = 0;
+  const F = c => `https://foodish-api.com/images/${c}/${c}${(++fn % 40) + 1}.jpg`;
+  const X = (n,d,p,kw) => ({n,d,p,s:[L(kw)].concat(/burger/.test(kw)?[F("burger")]:/brownie|sundae|cookie|pie/.test(kw)?[F("dessert")]:[])});
+
+  const shops = {
+    sun: { name:"Sun Burguer", tag:"Hambúrgueres artesanais com sabor de verão", cover:[U("1568901346375-23c9450c58cd"),L("burger")],
+      cats:{
+        "Hambúrgueres":[
+          B("Sun Classic","Blend 160g, cheddar, alface, tomate e molho da casa.",28.9,"1568901346375-23c9450c58cd"),
+          B("Sun Bacon","Blend 160g, bacon crocante, cheddar e cebola caramelizada.",33.9,"1550547660-d9450f859349"),
+          B("Sun Duplo","Dois burgers de 120g, dobro de queijo e picles.",36.9,"1571091718767-18b5b1457add"),
+          B("Sun Smoke","Blend 160g, barbecue defumado, onion rings e queijo prato.",34.9,"1594212699903-ec8a3eca50f5"),
+          B("Sun Chicken","Frango empanado crocante, maionese de ervas e alface.",27.9,"1553979459-d2229ba7433b")],
+        "Combos":[
+          X("Combo Classic","Sun Classic + batata média + refri lata.",39.9,"burger,fries"),
+          X("Combo Duplo","Sun Duplo + batata grande + refri lata.",49.9,"burger,fries,soda")],
+        "Acompanhamentos":[
+          X("Batata Frita","Porção crocante com sal e páprica.",16.0,"french,fries"),
+          X("Onion Rings","Anéis de cebola empanados com molho.",18.0,"onion,rings"),
+          X("Nuggets (8un)","Nuggets de frango com molho barbecue.",19.0,"chicken,nuggets")],
+        "Bebidas":[
+          X("Refrigerante lata","Coca, Guaraná ou Sprite.",6.0,"soda,can"),
+          X("Suco natural","Laranja, limão ou maracujá (400ml).",9.0,"juice,glass"),
+          X("Milkshake","Chocolate, morango ou baunilha (400ml).",18.0,"milkshake"),
+          X("Água","Com ou sem gás.",4.0,"water,bottle")],
+        "Sobremesas":[
+          X("Brownie","Brownie de chocolate com sorvete.",16.0,"brownie"),
+          X("Sundae","Sorvete com calda de chocolate ou morango.",14.0,"sundae,icecream")]
+      }},
+    picnic: { name:"Picnic", tag:"Burgers leves e frescos para curtir ao ar livre", cover:[U("1572802419224-296b0aeee0d9"),L("burger")],
+      cats:{
+        "Hambúrgueres":[
+          B("Picnic Original","Blend 150g, queijo prato, alface, tomate e maionese temperada.",26.9,"1572802419224-296b0aeee0d9"),
+          B("Picnic Salada","Blend 150g, mix de folhas, tomate, cebola roxa e mostarda e mel.",28.5,"1561758033-d89a9ad46330"),
+          B("Picnic Blue","Blend 150g, gorgonzola, cebola crispy e geleia de pimenta.",35.0,"1513185158878-8d8c2a2a3da3"),
+          B("Picnic Crispy","Frango crocante, coleslaw, picles e molho ranch.",29.5,"1607013251379-e6eecfffe234"),
+          B("Picnic Ovo","Blend 150g, ovo frito, bacon, queijo e molho da casa.",32.5,"1565299507177-b0ac66763828")],
+        "Combos":[
+          X("Combo Original","Picnic Original + batata rústica + suco.",38.9,"burger,fries"),
+          X("Combo Casal","2 burgers à escolha + batata grande + 2 bebidas.",79.9,"burger,fries,drinks")],
+        "Porções":[
+          X("Batata Rústica","Batata com casca, alecrim e alho.",17.0,"potato,wedges"),
+          X("Mandioca Frita","Palitos crocantes com molho verde.",16.0,"cassava,fries"),
+          X("Salada Picnic","Folhas, tomate cereja e molho cítrico.",15.0,"salad")],
+        "Bebidas":[
+          X("Limonada","Limão siciliano com hortelã (500ml).",10.0,"lemonade"),
+          X("Chá gelado","Pêssego ou limão (400ml).",8.0,"iced,tea"),
+          X("Refrigerante lata","Coca, Guaraná ou Sprite.",6.0,"soda,can"),
+          X("Cerveja long neck","Pilsen gelada.",11.0,"beer,bottle")],
+        "Sobremesas":[
+          X("Cookie","Cookie de chocolate belga.",9.0,"cookie"),
+          X("Torta de limão","Fatia com merengue maçaricado.",14.0,"lemon,pie")]
+      }}
+  };
+
+  const $ = id => document.getElementById(id);
+  const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+  const state = { shop:null, cat:null, cart:{ sun:{}, picnic:{} } };
+
+  /* imagens com fallback: tenta a próxima fonte; se todas falharem, mostra caixa neutra */
+  /* 1ª tentativa: foto sua em fotos/<nome-do-item>.jpg (ex.: fotos/sun-classic.jpg) */
+  const slug = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  const img = (srcs, alt) => (srcs = [`fotos/${slug(alt)}.jpg`].concat(srcs), `<img src="${srcs[0]}" data-f="${srcs.slice(1).join("|")}" alt="${alt}" loading="lazy" onerror="fb(this)">`);
+  function fb(el){
+    const f = el.dataset.f ? el.dataset.f.split("|") : [];
+    if(f.length){ el.src = f.shift(); el.dataset.f = f.join("|"); }
+    else if(el.closest(".ph")){ el.parentNode.textContent = "📷 foto em breve"; }
+    else el.remove();
+  }
+
+  /* home */
+  $("shops").innerHTML = Object.entries(shops).map(([k,s]) => `
+    <button class="shop ${k==="sun"?"sun":"picnic-card"}" data-shop="${k}">
+      ${img(s.cover,s.name)}
+      <div class="in"><h2>${s.name}</h2><p>${s.tag}</p><span class="pill">Ver cardápio →</span></div>
+    </button>`).join("");
+
+  function openShop(k){
+    state.shop = k; state.cat = Object.keys(shops[k].cats)[0];
+    document.body.className = k === "picnic" ? "picnic" : "";
+    const s = shops[k];
+    $("banner").innerHTML = `${img(s.cover,s.name)}<div class="in"><h2>${s.name}</h2><p>${s.tag}</p></div>`;
+    renderCats(); renderItems();
+    $("vHome").classList.add("hidden"); $("vMenu").classList.remove("hidden");
+    $("home").classList.remove("hidden");
+    bar(); scrollTo(0,0);
+  }
+  function goHome(){
+    state.shop = null; document.body.className = "";
+    $("vMenu").classList.add("hidden"); $("vHome").classList.remove("hidden");
+    $("home").classList.add("hidden"); bar(); scrollTo(0,0);
+  }
+
+  function renderCats(){
+    $("cats").innerHTML = Object.keys(shops[state.shop].cats).map(c =>
+      `<button class="chip ${c===state.cat?"on":""}" data-cat="${c}">${c}</button>`).join("");
+  }
+
+  const idOf = (cat,i) => cat + "|" + i;
+  function ctl(id){
+    const q = state.cart[state.shop][id] || 0;
+    return q ? `<div class="step"><button data-sub="${id}">−</button><b>${q}</b><button class="plus" data-add="${id}">+</button></div>`
+             : `<button class="add" data-add="${id}">Adicionar</button>`;
+  }
+  function renderItems(){
+    $("items").innerHTML = shops[state.shop].cats[state.cat].map((it,i) => {
+      const id = idOf(state.cat,i);
+      return `<article class="item"><div class="ph">${img(it.s,it.n)}</div>
+        <div class="body"><h3>${it.n}</h3><p>${it.d}</p>
+        <div class="row"><span class="price">${brl(it.p)}</span><span data-ctl="${id}">${ctl(id)}</span></div></div></article>`;
+    }).join("");
+  }
+
+  /* carrinho */
+  function find(id){ const [c,i] = id.split("|"); return shops[state.shop].cats[c][+i]; }
+  function change(id,d){
+    const cart = state.cart[state.shop];
+    const q = (cart[id]||0) + d;
+    if(q<=0) delete cart[id]; else cart[id] = q;
+    const el = document.querySelector(`[data-ctl="${id}"]`);
+    if(el) el.innerHTML = ctl(id);
+    bar(); if($("sheet").classList.contains("show")) renderCart();
+  }
+  const lines = () => Object.entries(state.cart[state.shop]).map(([id,q]) => ({it:find(id),q}));
+  const total = () => lines().reduce((t,l) => t + l.it.p*l.q, 0);
+  const count = () => lines().reduce((t,l) => t + l.q, 0);
+
+  function bar(){
+    const n = state.shop ? count() : 0;
+    $("bar").classList.toggle("show", n>0);
+    if(n>0) $("barL").textContent = `🛒 ${n} ${n>1?"itens":"item"} · ${brl(total())}`;
+  }
+  function renderCart(){
+    const ls = lines();
+    $("cartList").innerHTML = ls.length ? ls.map(({it,q}) => {
+      const id = Object.keys(state.cart[state.shop]).find(k => find(k)===it);
+      return `<div class="line"><div>${it.n}<small>${brl(it.p)} cada</small></div>
+        <div class="step"><button data-sub="${id}">−</button><b>${q}</b><button class="plus" data-add="${id}">+</button></div></div>`;
+    }).join("") : `<div class="empty">Seu carrinho está vazio.</div>`;
+    $("cartTotal").textContent = brl(total());
+    $("send").classList.toggle("off", !ls.length);
+    if(!ls.length) setTimeout(closeCart, 400);
+  }
+  function openCart(){ renderCart(); $("sheet").classList.add("show"); $("back").classList.add("show"); }
+  function closeCart(){ $("sheet").classList.remove("show"); $("back").classList.remove("show"); }
+
+  function message(){
+    const s = shops[state.shop], delivery = $("fType").value === "Entrega na escola";
+    let m = `Olá, *${s.name}* (Maple Lunch)! 👋\nGostaria de fazer um pedido:\n\n`;
+    lines().forEach(({it,q}) => m += `• ${q}x ${it.n} — ${brl(it.p*q)}\n`);
+    m += `\n*Total: ${brl(total())}*\n\n*Nome:* ${$("fName").value.trim()}\n*Recebimento:* ${$("fType").value}\n`;
+    if(delivery) m += `*Local na escola:* ${$("fAddr").value.trim()}\n`;
+    m += `*Pagamento:* ${$("fPay").value}`;
+    const o = $("fObs").value.trim(); if(o) m += `\n*Obs:* ${o}`;
+    return m;
+  }
+  function valid(){
+    let ok = true;
+    const need = [$("fName")]; if($("fType").value === "Entrega na escola") need.push($("fAddr"));
+    [$("fName"),$("fAddr")].forEach(i => i.classList.remove("err"));
+    need.forEach(i => { if(!i.value.trim()){ i.classList.add("err"); ok = false; } });
+    if(!ok) need.find(i => i.classList.contains("err")).focus();
+    return ok;
+  }
+
+  /* eventos */
+  document.addEventListener("click", e => {
+    const t = e.target.closest("button, .bar"); if(!t) return;
+    if(t.dataset.shop) openShop(t.dataset.shop);
+    else if(t.dataset.cat){ state.cat = t.dataset.cat; renderCats(); renderItems(); }
+    else if(t.dataset.add) change(t.dataset.add, 1);
+    else if(t.dataset.sub) change(t.dataset.sub, -1);
+    else if(t.id === "bar") openCart();
+  });
+  $("bar").addEventListener("click", openCart);
+  $("home").onclick = goHome;
+  $("close").onclick = closeCart;
+  $("back").onclick = closeCart;
+  $("fType").onchange = () => $("addrBox").classList.toggle("hidden", $("fType").value !== "Entrega na escola");
+  $("clear").onclick = () => { state.cart[state.shop] = {}; renderItems(); bar(); renderCart(); };
+  $("copy").onclick = async () => {
+    if(!valid()) return;
+    try { await navigator.clipboard.writeText(message()); $("copy").textContent = "Copiado ✓"; }
+    catch(_) { const b = $("msgBox"); b.value = message(); b.classList.remove("hidden"); b.select(); }
+    setTimeout(() => $("copy").textContent = "Copiar mensagem", 1800);
+  };
+  $("send").onclick = e => {
+    if($("send").classList.contains("off") || !valid()){ e.preventDefault(); return; }
+    $("send").href = `https://wa.me/${WHATS[state.shop]}?text=${encodeURIComponent(message())}`;
+  };
+</script>
+</body>
+</html>
